@@ -76,15 +76,7 @@ function popup(msg){
     
   }, 1000);
 }
-function contactCallAll(){
 
-  isEmpty('name','You name is empty',isLettersOnly('name','Enter letters only'));
-  isEmpty('email','Your email is empty',emailCheck('email'));
-  isEmpty('phone','Your phone number is empty',()=>{});
-  isEmpty('company','Company is empty',isLettersOnly('name','Enter letters only'));
-  isEmpty('selectCountry','Country is empty',emailCheck('email'));
-
-}
 function changeText(msg, inputId){
   var input = document.getElementById(inputId);
   console.log('Running Change text');
@@ -93,6 +85,7 @@ function changeText(msg, inputId){
   console.log(document.getElementById(inputId).value);
   setTimeout(() => {
     document.getElementById(inputId).value = '';
+    input.style.border = "1px solid black";
   }, 2000);
 }
 function isLettersOnly(inputId, errorMessage) {

@@ -378,16 +378,30 @@
   <script>
     function sendMail() {
       var name = document.getElementById('name').value;
+      var email = document.getElementById('email').value;
       var phone = document.getElementById('phone').value;
       var company = document.getElementById('company').value;
       var country = document.getElementById('selectCountry').value;
       var message = document.getElementById('message').value;
       var subject = document.getElementById('select').value;
-      Email.send({
+      if(name === '')
+        changeText('Enter your name','name');
+      if(email === '')
+        changeText('Enter your email','email');
+      if(phone === '')
+        changeText('Enter your phone','phone');
+      if(company === '')
+        changeText('Enter your company','company');
+      if(country === 'country')
+        changeText('country','selectCountry');
+      if(message === '')
+        changeText('Enter your message','message');
+      else{
+        Email.send({
         
         SecureToken: "1bb44615-f583-4862-a84c-48f237ac24e6",
         To: 'sta.demo5678@gmail.com',
-        From: "mohamed.ahmed3343@gmail.com",
+        From: "sta.demo1234@gmail.com",
         Subject: subject,
         Body: "A copy of the data you sent: \nName: " + name + 
         "\n" + "Phone: " + phone +
@@ -401,6 +415,8 @@
         "\n" + "Country: " + country +
         "\n" + "Message: " + message )
       );
+      alert('Your Email is Sent Successfully!');
+      }
     }
 
     
