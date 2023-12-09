@@ -13,7 +13,16 @@
   background-color: #ff0000;
 }
 
-
+.l{
+  margin-left: 5%; 
+  /* margin-top: -13px; */
+  color: rgb(255, 0, 0);
+  /* text-shadow: 0 0 3px #be0000, 0 0 5px #ff0000;  */
+  text-shadow: -1px 1px 0 #000, 
+                          1px 1px 0 #000, 
+                         1px -1px 0 #000, 
+                        -1px -1px 0 #000; 
+}
 .register-container {
   width: 100%;
   display: flex;

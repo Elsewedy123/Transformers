@@ -41,20 +41,47 @@ function validation() {
 }
 
 function callAll() {
+
   // check for first name
-  isEmpty('fname', 'first name is empty', isLettersOnly('fname', "Please enter letters only in first name"));
-  
-  // check for last name
-  isEmpty('lname', 'last name is empty', isLettersOnly('lname', "Please enter letters only in first name"));
+
+  if(!isEmpty('fname'))
+    if(isLettersOnly('fname'))
+      goodToGo = true;
+    else
+     changeText('Enter letters only','fname','l1');
+    else
+    changeText('first name is empty','fname','l1');
+// check for last name
+  if(!isEmpty('lname'))
+    if(isLettersOnly('lname'))
+        goodToGo = true;
+    else
+     changeText('Enter letters only','lname','l2');
+    else
+    changeText('first name is empty','lname','l2');  
+
   // check for email
-  
-  isEmpty('email', 'email is empty', emailCheck('email'));
+  if(!isEmpty('email'))
+    if(emailCheck('email'))
+        goodToGo = true;
+    else
+     changeText('Invalid Email','email','l3');
+    else
+    changeText('Email is empty','lname','l3');  
   // check for password
-  
-  isEmpty('password','password is empty',validPassword('password'));
+  if(!isEmpty('password'))
+    validPassword('password','l4');
+  else
+     changeText('Password is empty','password','l4'); 
   // check for confirm password
+  if(!isEmpty('cpassword'))
+    if(validConfirmPassword('password','cpassword','l5'))
+      goodToGo = true;
+    else
+   changeText('Passwords are not the same','cpassword','l5');
+  else
+  changeText('Passwords is empty','cpassword','l5');  
   
-  isEmpty('cpassword','confirm password is empty',validConfirmPassword('password','cpassword'));
   if (isEveryThingValid()) {
     createUser();
     //console.log(allusers);
@@ -77,18 +104,25 @@ function popup(msg){
   }, 1000);
 }
 
-function changeText(msg, inputId){
+function changeText(msg, inputId,labelId){
   var input = document.getElementById(inputId);
+  var label = document.getElementById(labelId);
   console.log('Running Change text');
   input.style.border="3px solid red";
-  document.getElementById(inputId).value = msg;
+  label.innerHTML = msg;
+  label.style.marginTop = "-13px";
+  label.style.fontSize = '10px';
+  label.style.fontWeight = 'bold';
   console.log(document.getElementById(inputId).value);
   setTimeout(() => {
-    document.getElementById(inputId).value = '';
+    input.value = '';
     input.style.border = "1px solid black";
+    label.style.marginTop = "";
+    label.innerHTML = '';
   }, 2000);
 }
-function isLettersOnly(inputId, errorMessage) {
+function isLettersOnly(inputId) {//, errorMessage,labelId
+  try{
   var inputElement = document.getElementById(inputId);
   var lettersRegex = /\d/;
 
@@ -96,22 +130,29 @@ function isLettersOnly(inputId, errorMessage) {
   var onlyLetters = lettersRegex.test(inputElement.value);
 
   if (onlyLetters) {
-    changeText(errorMessage,inputId);
+    //changeText(errorMessage,inputId,labelId);
     inputElement.value = '';
     goodToGo = false;
+    return false;
   } else {
     goodToGo = true;
+    return true;
+  } 
+  }catch (error) {
+    //console.error('Error in isLettersOnly function:', error.message);
+    return false;
   }
 }
-function isEmpty(inputId, errorMessage, fn) {
+function isEmpty(inputId) {//, errorMessage, fn,labelId
   var input = document.getElementById(inputId);
   if (input.value === '') {
-    //popup(errorMessage);
-    changeText(errorMessage,inputId);
+    // changeText(errorMessage,inputId,labelId);
     goodToGo = false;
     allIsGood.push(goodToGo);
+    return true;
   } else {
-    fn;
+    // fn;
+    return false;
   }
 }
 function isEveryThingValid() {
@@ -131,14 +172,15 @@ function emailCheck(emailId) {
   var validEmail = emailRegex.test(inputElement.value);
 
   if (inputElement.value !== '' && !validEmail) {
-    changeText("Invalid Email Format",emailId);
     inputElement.value = '';
     goodToGo = false;
+    return false
   } else {
     goodToGo = true;
+    return true;
   }
 }
-function validPassword(passId) {
+function validPassword(passId,labelId) {
   var inputElement = document.getElementById(passId);
   var lengthRegex = /^.{8,}$/;
   var lowercaseRegex = /[a-z]/;
@@ -152,29 +194,29 @@ function validPassword(passId) {
   var meetsNumber = numberRegex.test(inputElement.value);
   var meetsSpecialChar = specialCharRegex.test(inputElement.value);
 
-  if (inputElement.value === !'') {
+  if (inputElement.value !== '') {
     if (!meetsLength) {
-      changeText("Password is less than 8",passId);
+      changeText("Password is less than 8",passId,labelId);
       inputElement.value = '';
       goodToGo = false;
     }
     else if (!meetsLowercase) {
-      changeText("Password must contain lower case letter",passId);
+      changeText("Invalid password",passId,labelId);
       inputElement.value = '';
       goodToGo = false;
     }
     else if (!meetsUppercase) {
-      changeText("Password must contain upper case letter", passId);
+      changeText("Password must contain upper case letter", passId,labelId);
       inputElement.value = '';
       goodToGo = false;
     }
     else if (!meetsNumber) {
-      changeText("Password must contain at least one number",passId);
+      changeText("Password must contain at least one number",passId,labelId);
       inputElement.value = '';
       goodToGo = false;
     }
     else if (!meetsSpecialChar) {
-      changeText("Password must contain least one special character", passId);
+      changeText("Invalid password", passId,labelId);
       inputElement.value = '';
       goodToGo = false;
     } else {
@@ -188,11 +230,12 @@ function validConfirmPassword(inputId1, inputId2) {
 
 
   if (pass.value !== cpass.value) {
-    changeText("Passwords are not the same",inputId2);
     cpass.value = '';
     goodToGo = false;
+    return false;
   } else {
     goodToGo = true;
+    return true;
   }
 }
 function logout() {
@@ -254,29 +297,40 @@ function createUser() {
 
 function logIn() {
   console.log(localStorage.getItem("users"));
-  if (localStorage.getItem("users")) {
-    let searchedUser = JSON.parse(localStorage.getItem("users"));
-
-    for (let index = 0; index < searchedUser.length; index++) {
-      if (userLoginEmail.value == searchedUser[index].uEmail && userLoginPassword.value == searchedUser[index].uPassword) {
-          flag = true;
-          loginuser = `Welcome to your account Mr/Mrs : "${searchedUser[index].uName}"`;
-          tempiD = searchedUser[index].uID;
-          tempName = searchedUser[index].uName;
-          break;
+  
+    if(!isEmpty('loginEmail')){
+      if(!isEmpty('loginPassword')){
+        if (localStorage.getItem("users")) {
+          let searchedUser = JSON.parse(localStorage.getItem("users"));
+        for (let index = 0; index < searchedUser.length; index++) {
+          if (userLoginEmail.value == searchedUser[index].uEmail && userLoginPassword.value == searchedUser[index].uPassword) {
+              flag = true;
+              loginuser = `Welcome to your account Mr/Mrs : "${searchedUser[index].uName}"`;
+              tempiD = searchedUser[index].uID;
+              tempName = searchedUser[index].uName;
+              break;
+              
+          }
+        }
+        if (flag) {
+          alert(loginuser);
+          window.location.href = 'index.html';
+        } else {
+          changeText("Invalid User email or password", 'loginEmail','lemail');
+          changeText("Invalid User email or password", 'loginPassword','lpass');
+        }
+      } else {
+        changeText("No user found, try contact support",'loginEmail','lemail');
       }
+      localStorage.setItem('logInuser', tempiD);
+      localStorage.setItem('logInuserName', tempName);
+      }else{
+        changeText("Email not found", 'loginPassword','lpass');
+      }
+    }else{
+        changeText("Email not found", 'loginEmail','lemail');
     }
-    if (flag) {
-      alert(loginuser);
-      window.location.href = 'index.html';
-    } else {
-      changeText("Invalid User email or password", 'loginEmail');
-    }
-  } else {
-    changeText("Try to contact with Admin for this issue..",'loginEmail');
-  }
-  localStorage.setItem('logInuser', tempiD);
-  localStorage.setItem('logInuserName', tempName);
+    
 }
 
 

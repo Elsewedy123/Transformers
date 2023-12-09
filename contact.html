@@ -400,17 +400,19 @@
         Email.send({
         
         SecureToken: "1bb44615-f583-4862-a84c-48f237ac24e6",
-        To: 'sta.demo5678@gmail.com',
+        To: email,
         From: "sta.demo1234@gmail.com",
         Subject: subject,
         Body: "A copy of the data you sent: \nName: " + name + 
         "\n" + "Phone: " + phone +
+        "\n" + "Email: " + email +
         "\n" + "Company: " + company +
         "\n" + "Country: " + country +
         "\n" + "Message: " + message 
       }).then(
         message => console.log("Name: " + name + 
         "\n" + "Phone: " + phone +
+        "\n" + "Email: " + email +
         "\n" + "Company: " + company +
         "\n" + "Country: " + country +
         "\n" + "Message: " + message )
